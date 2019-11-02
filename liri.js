@@ -169,4 +169,47 @@ function runLiri() {
             })
 
             break;
+            
+            case "movie-this":
+            //If statement for no movie provided
+            if (!userInput) {
+                userInput = "Mr%20Nobody";
+                nextUserInput = userInput.replace(/%20/g, " ");
+            }
+
+            //Append userInput to log.txt
+            fs.appendFileSync("log.txt", nextUserInput + "\n----------------\n", function (error) {
+                if (error) {
+                    console.log(error);
+                };
+            });
+
+            //Run request to OMDB
+            var queryURL = "https://www.omdbapi.com/?t=" + userInput + "&y=&plot=short&apikey=trilogy"
+            request(queryURL, function (error, response, body) {
+                if (!error && response.statusCode === 200) {
+                    var info = JSON.parse(body);
+                    console.log("Title: " + info.Title)
+                    console.log("Release Year: " + info.Year)
+                    console.log("OMDB Rating: " + info.Ratings[0].Value)
+                    console.log("Rating: " + info.Ratings[1].Value)
+                    console.log("Country: " + info.Country)
+                    console.log("Language: " + info.Language)
+                    console.log("Plot: " + info.Plot)
+                    console.log("Actors: " + info.Actors)
+
+                    //Append data to log.txt
+                    fs.appendFileSync("log.txt", "Title: " + info.Title + "\nRelease Year: " + info.Year + "\nIMDB Rating: " + info.Ratings[0].Value + "\nRating: " +
+                        info.Ratings[1].Value + "\nCountry: " + info.Country + "\nLanguage: " + info.Language + "\nPlot: " + info.Plot + "\nActors: " + info.Actors + "\n----------------\n",
+                        function (error) {
+                            if (error) {
+                                console.log(error);
+                            };
+                        });
+                }
+            });
+
+            break;
+    }
+}
    
